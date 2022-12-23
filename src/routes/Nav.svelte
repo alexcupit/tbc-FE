@@ -38,7 +38,7 @@
 		justify-content: space-between;
 		width: 100%;
 		border: blue 3px solid;
-		height: 10vh;
+		/* height: 10vh; */
 	}
 
 	.header__logo {
