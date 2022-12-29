@@ -1,32 +1,46 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import { writable } from 'svelte/store';
 	import Results from './Results.svelte';
+	import { browser } from '$app/environment';
 	export let data: PageData;
-	let questionNumber: number = 0;
-	// window.localStorage.setItem('quizCompleted', 'false');
+	// let questionNumber: number = 0;
 
-	if (!localStorage.todayStats) {
-		localStorage.setItem(
-			'todayStats',
-			JSON.stringify({ date: '', score: 0, timeTaken: '', correctAns: 0, quizCompleted: false })
-		);
+	if (browser) {
+		if (!localStorage.todayStats) {
+			localStorage.setItem(
+				'todayStats',
+				JSON.stringify({ date: '', score: 0, timeTaken: '', correctAns: 0, quizCompleted: false })
+			);
+		}
+		if (!localStorage.questionNumber) {
+			localStorage.setItem('questionNumber', '0');
+		}
+	}
+
+	export const completedCheck = writable<boolean>(
+		browser && JSON.parse(localStorage.todayStats).quizCompleted
+	);
+	completedCheck.subscribe((value) => {
+		if (browser) return (JSON.parse(localStorage.todayStats).quizCompleted = value);
+	});
+
+	export let questionNumber: any;
+	if (browser) {
+		questionNumber = writable<number>(JSON.parse(localStorage.questionNumber));
+		questionNumber.subscribe((value: number) => {
+			if (browser) return (localStorage.questionNumber = value);
+		});
 	}
 
 	let todayStats = { date: '', score: 0, timeTaken: '', correctAns: 0, quizCompleted: false }; // this will reset on each page load, needs fixing!
-
-	// if (localStorage.quizCompleted === 'false') {
-	// 	localStorage.setItem(
-	// 		'todayStats',
-	// 		JSON.stringify({ date: '', score: 0, timeTaken: '', correctAns: 0 })
-	// 	);
-	// }
 
 	// type stats = { date: string; score: number; timeTaken: string; correctAns: number };
 
 	const handleSubmitAnswer = (e: Event) => {
 		const target = e.target as HTMLElement;
 
-		const correctAnswer = data.questions[questionNumber].correctAnswer;
+		const correctAnswer = data.questions[$questionNumber].correctAnswer;
 		if (target?.innerText === correctAnswer) {
 			target?.classList.add('answer--correct');
 			todayStats.correctAns += 1;
@@ -44,24 +58,14 @@
 		}
 
 		setTimeout(() => {
-			questionNumber += 1;
-			if (questionNumber === 5) {
+			$questionNumber += 1;
+			if ($questionNumber === 5) {
 				todayStats.quizCompleted = true;
 				todayStats.timeTaken = formattedTime;
-
-				// localStorage.setItem(JSON.stringify(todayStats.quizCompleted), 'true');
-				// localStorage.setItem(todayStats.timeTaken, formattedTime);
-				// localStorage.setItem('quizCompleted', JSON.stringify(quizCompleted));
 				localStorage.setItem('todayStats', JSON.stringify(todayStats));
-
-				console.log(
-					typeof JSON.parse(localStorage.todayStats).quizCompleted,
-					JSON.parse(localStorage.todayStats).quizCompleted
-				);
+				$completedCheck = JSON.parse(localStorage.todayStats).quizCompleted;
 			}
 		}, 1000);
-
-		console.dir(localStorage);
 	};
 
 	let timer = 0;
@@ -95,13 +99,13 @@
 	};
 </script>
 
-{#if JSON.parse(localStorage.todayStats).quizCompleted === false}
+{#if !$completedCheck}
 	<p>{formattedTime}</p>
 	{#each data.questions as question, i}
 		{@const answers = [...question.incorrectAnswers, question.correctAnswer]}
 		{@const questionIndexes = randomIndex()}
 
-		{#if i === questionNumber}
+		{#if i === $questionNumber}
 			<div class="question">
 				<h2>{question.question}</h2>
 				<h4>{question.category}</h4>
@@ -125,11 +129,6 @@
 {/if}
 
 <style>
-	/* .answer--correct {
-		background-color: green;
-		padding: 100px;
-	} */
-
 	:global(.answer--correct) {
 		background-color: green;
 	}
