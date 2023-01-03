@@ -1,5 +1,11 @@
 <script lang="ts">
+	import { Link } from "svelte-navigator";
 	let innerWidth: number;
+	import userStore from "../stores/userStore"
+	let  user: object;
+	userStore.subscribe((data) => {
+		user = data
+	}) 
 </script>
 
 <svelte:window bind:innerWidth />
@@ -8,6 +14,11 @@
 	<p class="header__logo">Logo</p>
 
 	<nav class="navbar">
+		{#if !user.isLoggedIn}
+			<a href="/login">Login</a>
+		{:else}
+			<a href="/profile">profile</a>
+		{/if}
 		<a href="/" class="navbar__link"
 			><img
 				class="navbar__icon"

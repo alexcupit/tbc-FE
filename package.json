@@ -30,6 +30,8 @@
 	"type": "module",
 	"dependencies": {
 		"axios": "^1.2.1",
-		"hamburger-menu-svelte": "^2.2.0"
+		"firebase": "^9.15.0",
+		"hamburger-menu-svelte": "^2.2.0",
+		"svelte-navigator": "^3.2.2"
 	}
 }
