@@ -47,9 +47,7 @@
 	.header {
 		display: flex;
 		justify-content: space-between;
-		width: 100%;
 		border: blue 3px solid;
-		height: 10vh;
 	}
 
 	.header__logo {
@@ -66,10 +64,12 @@
 	.navbar__link {
 		margin: 0 5px;
 		border: black 1px solid;
+		height: 48px;
+		width: 48px;
 	}
 
 	.navbar__icon {
-		height: 48px;
-		width: 48px;
+		height: 100%;
+		width: 100%;
 	}
 </style>
