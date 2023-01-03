@@ -62,8 +62,8 @@
 	const submitHandleSingUp = async (e) => {
 		console.log("submitted sign up form values", values)
 		const photoURL = `https://avatars.dicebear.com/api/${randomStyle(avatarStyles)}/${values.username}.svg?size=200`
-		await createUserWithEmailAndPassword(auth, values.email, values.password).
-    then( async (userCredential) => {
+		await createUserWithEmailAndPassword(auth, values.email, values.password)
+    	.then( async (userCredential) => {
 			const userFirebase = userCredential.user
 			await updateProfile(userFirebase, {
 				displayName: values.username, photoURL})
@@ -80,30 +80,31 @@
 			});
 			console.log(createdUser);
 			goto('/');
-			})
-			.catch((err) => {
-				firebaseError = err.code.split('/')[1];
-			});
+		})
+		.catch((err) => {
+			firebaseError = err.code.split('/')[1];
+		});
 	};
 	const submitHandleLogin = async (e) => {
 		disableButton = true
 		console.log("submitted login form values", values)
 		await signInWithEmailAndPassword(auth, values.email, values.password)
-    .then((userCredential) => {
-			  const userFirebase = userCredential.user
-			  userStore.update((user) => {
+    	.then((userCredential) => {
+			const userFirebase = userCredential.user
+			userStore.update((user) => {
 				user.isLoggedIn = true
 				user.userId = userFirebase.uid
 				user.username = userFirebase.displayName
 				user.photoURL = userFirebase.photoURL
 				return user
-				console.log('logged in user', user);
-				goto('/');
 			})
-			.catch((err) => {
-				firebaseError = err.code.split('/')[1];
-				disableButton = false;
-			});
+			console.log('logged in user', user);
+			goto('/');
+		})
+	.catch((err) => {
+		firebaseError = err.code.split('/')[1];
+		disableButton = false;
+	});
 	};
 </script>
 
