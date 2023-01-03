@@ -1,4 +1,5 @@
 <script lang="ts">
+	import '.././global.css';
 	import Nav from './Nav.svelte';
 </script>
 
