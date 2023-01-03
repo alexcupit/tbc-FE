@@ -36,6 +36,7 @@
 		pattern: "[a-zA-Z0-9]{8,}"
 		}
 	]
+	let avatarStyles = ["adventurer", "adventurer-neutral", "bottts", "micah", "big-smile"]
 	let  user: object;
 	let signUp = false
 	const login = true
@@ -44,16 +45,21 @@
 	userStore.subscribe(async (data) => {
 		user = data
 		if(user.isLoggedIn) await goto("/")
-	}) 
+	})
+	const randomStyle = (arr) => {
+		return arr[Math.floor(Math.random()*arr.length)]
+	}
 	const onChange = (e) => {
 		values = {...values, [e.target.placeholder]: e.target.value}
 		console.dir(e.target)
 	}
 	const submitHandleSingUp = async (e) => {
 		console.log("submitted sign up form values", values)
+		const photoURL = `https://avatars.dicebear.com/api/${randomStyle(avatarStyles)}/${values.username}.svg?size=200`
 		await createUserWithEmailAndPassword(auth, values.email, values.password).then( async (userCredential) => {
 			const userFirebase = userCredential.user
-			await updateProfile(userFirebase, {displayName: values.username})
+			await updateProfile(userFirebase, {
+				displayName: values.username, photoURL})
 			console.log("created account in firebase", userFirebase)
 			const mongoDbUserBody = {username: userFirebase.displayName, userId: userFirebase.uid}
 			const createdUser = await mongoDbcreateUser(mongoDbUserBody)
@@ -62,6 +68,7 @@
 				user.isLoggedIn = true
 				user.username = createdUser.username
 				user.userId = createdUser.userId
+				user.photoURL = photoURL
 				return user
 			})
 			console.log(createdUser)
@@ -79,6 +86,7 @@
 				user.isLoggedIn = true
 				user.userId = userFirebase.uid
 				user.username = userFirebase.displayName
+				user.photoURL = userFirebase.photoURL
 				return user
 			})
 			console.log("logged in user", user)

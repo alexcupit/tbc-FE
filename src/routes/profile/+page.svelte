@@ -8,3 +8,4 @@
 <p>Username: {user.username}</p>
 <p>Last played: {user.dateLastPlayed}</p>
 <p>Current streak: {user.currentStreak}</p>
+<img src={user.photoURL}>
