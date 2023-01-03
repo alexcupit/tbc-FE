@@ -7,7 +7,7 @@
 	setInterval(() => {
 		currTime = new Date().toTimeString().split(' ')[0].split(':');
 	}, 1000);
-	$: hours = 24 - +currTime[0];
+	$: hours = 23 - +currTime[0];
 	$: mins = 60 - +currTime[1];
 	$: secs = 60 - +currTime[2];
 </script>
