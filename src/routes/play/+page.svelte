@@ -41,11 +41,11 @@
 		const target = e.target as HTMLElement;
 
 		const correctAnswer = data.questions[$questionNumber].correctAnswer;
-		if (target?.innerText === correctAnswer) {
-			target?.classList.add('answer--correct');
+		if (target?.innerText === correctAnswer.toUpperCase()) {
+			target?.classList.add('btn-success');
 			todayStats.correctAns += 1;
 		} else {
-			target?.classList.add('answer--incorrect');
+			target?.classList.add('btn-error');
 			let xpath = `//button[contains(text(),'${correctAnswer}')]`; // needs testing with quotes in answers
 			let matchingElement: any = document.evaluate(
 				xpath,
@@ -54,7 +54,7 @@
 				XPathResult.FIRST_ORDERED_NODE_TYPE,
 				null
 			).singleNodeValue;
-			matchingElement?.classList.add('answer--correct');
+			matchingElement?.classList.add('btn-success');
 		}
 
 		setTimeout(() => {
@@ -109,16 +109,16 @@
 			<div class="question">
 				<h2>{question.question}</h2>
 				<h4>{question.category}</h4>
-				<button class="answer--button" on:click={handleSubmitAnswer}
+				<button class="btn btn-primary" on:click={handleSubmitAnswer}
 					>{answers[questionIndexes[0]]}</button
 				>
-				<button class="answer--button" on:click={handleSubmitAnswer}
+				<button class="btn btn-primary" on:click={handleSubmitAnswer}
 					>{answers[questionIndexes[1]]}</button
 				>
-				<button class="answer--button" on:click={handleSubmitAnswer}
+				<button class="btn btn-primary" on:click={handleSubmitAnswer}
 					>{answers[questionIndexes[2]]}</button
 				>
-				<button class="answer--button" on:click={handleSubmitAnswer}
+				<button class="btn btn-primary" on:click={handleSubmitAnswer}
 					>{answers[questionIndexes[3]]}</button
 				>
 			</div>
