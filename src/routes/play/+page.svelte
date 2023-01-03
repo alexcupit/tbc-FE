@@ -5,6 +5,13 @@
 	import { browser } from '$app/environment';
 	export let data: PageData;
 	import { calcScore } from '../../utils/calcScore';
+	import userStore from '../../stores/userStore';
+	import { getUser, patchLeaderBoard, patchUser } from '../../api';
+
+	let user = {};
+	userStore.subscribe((value) => {
+		user = value;
+	});
 
 	if (browser) {
 		if (!localStorage.todayStats) {
@@ -66,6 +73,18 @@
 				todayStats.score = calcScore(timer, todayStats.correctAns);
 				localStorage.setItem('todayStats', JSON.stringify(todayStats));
 				$completedCheck = JSON.parse(localStorage.todayStats).quizCompleted;
+
+				if (user.isLoggedIn) {
+					patchUser(user.userId, { todayStats });
+					patchLeaderBoard('global', { username: user.username, todayStats });
+					getUser(user.userId).then((user) => {
+						if (user.leaderBoards.length) {
+							user.leaderBoards.forEach((leaderBoard) => {
+								patchLeaderBoard(leaderBoard, { username: user.username, todayStats });
+							});
+						}
+					});
+				}
 			}
 		}, 1000);
 	};
