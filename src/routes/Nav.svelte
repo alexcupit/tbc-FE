@@ -1,75 +1,74 @@
 <script lang="ts">
-	import { Link } from "svelte-navigator";
+	import { Link } from 'svelte-navigator';
 	let innerWidth: number;
-	import userStore from "../stores/userStore"
-	let  user: object;
+	import userStore from '../stores/userStore';
+	let user: object;
 	userStore.subscribe((data) => {
-		user = data
-	}) 
+		user = data;
+	});
 </script>
 
+<div class="modal" id="my-modal-2">
+	<div class="modal-box">
+		<h3 class="font-bold text-lg">Welcome to Know-It-All</h3>
+		<p class="py-4">Some text about how to play!</p>
+		<div class="modal-action">
+			<a href="#" class="btn">Got it!</a>
+		</div>
+	</div>
+</div>
+
 <svelte:window bind:innerWidth />
-
-<header class="header">
-	<p class="header__logo">Logo</p>
-
-	<nav class="navbar">
-		{#if !user.isLoggedIn}
-			<a href="/login">Login</a>
-		{:else}
-			<a href="/profile">profile</a>
-		{/if}
-		<a href="/" class="navbar__link"
-			><img
-				class="navbar__icon"
-				src="https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png"
-				alt=""
-			/></a
-		>
-		<a href="/" class="navbar__link"
-			><img
-				class="navbar__icon"
-				src="https://static.thenounproject.com/png/3165598-200.png"
-				alt=""
-			/></a
-		>
-		<a href="/" class="navbar__link"
-			><img
-				class="navbar__icon"
-				src="https://cdn-icons-png.flaticon.com/512/4489/4489655.png"
-				alt=""
-			/></a
-		>
-	</nav>
+<header>
+	<nav />
+	<div class="navbar bg-base-100">
+		<div class="flex-1">
+			<a href="/" class="btn btn-ghost normal-case text-xl">Know It All</a>
+		</div>
+		<div class="flex-none">
+			<ul class="menu menu-horizontal px-1">
+				<li>
+					<a href="/"
+						><img
+							src="https://cdn-user-icons.flaticon.com/5712/5712035/1672754140454.svg?token=exp=1672755040~hmac=255d4d1802cfb3ef14e41406d98cf7b5"
+							alt=""
+							height="25"
+							width="25"
+						/></a
+					>
+				</li>
+				<li>
+					<a href="#my-modal-2"
+						><img
+							src="https://cdn-user-icons.flaticon.com/5712/5712035/1672754279536.svg?token=exp=1672755179~hmac=cdaab0645fac51bd3ac80d0e02a6f755"
+							alt=""
+							height="25"
+							width="25"
+						/></a
+					>
+				</li>
+				<li>
+					{#if !user.isLoggedIn}
+						<a href="/login"
+							><img
+								src="https://cdn-user-icons.flaticon.com/5712/5712035/1672754056535.svg?token=exp=1672754971~hmac=bc819bbfcbf3e9532337163df7e67317"
+								alt=""
+								height="25"
+								width="25"
+							/></a
+						>
+					{:else}
+						<a href="/profile"
+							><img
+								src="https://cdn-user-icons.flaticon.com/5712/5712035/1672754056535.svg?token=exp=1672754971~hmac=bc819bbfcbf3e9532337163df7e67317"
+								alt=""
+								height="25"
+								width="25"
+							/></a
+						>
+					{/if}
+				</li>
+			</ul>
+		</div>
+	</div>
 </header>
-
-<style>
-	.header {
-		display: flex;
-		justify-content: space-between;
-		border: blue 3px solid;
-	}
-
-	.header__logo {
-		border: 2px green solid;
-		font-size: 2rem;
-	}
-
-	.navbar {
-		border: 2px solid black;
-		display: flex;
-		align-items: center;
-	}
-
-	.navbar__link {
-		margin: 0 5px;
-		border: black 1px solid;
-		height: 48px;
-		width: 48px;
-	}
-
-	.navbar__icon {
-		height: 100%;
-		width: 100%;
-	}
-</style>
