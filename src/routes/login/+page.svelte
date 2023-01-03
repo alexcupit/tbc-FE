@@ -41,55 +41,62 @@
 			required: true,
 			pattern: '[a-zA-Z0-9]{8,}'
 		}
-	];
-	let user: object;
-	let signUp = false;
-	const login = true;
-	let disableButton = false;
-	let firebaseError = '';
+	]
+	let avatarStyles = ["adventurer", "adventurer-neutral", "bottts", "micah", "big-smile"]
+	let  user: object;
+	let signUp = false
+	const login = true
+	let disableButton = false
+	let firebaseError = ""
 	userStore.subscribe(async (data) => {
-		user = data;
-		if (user.isLoggedIn) await goto('/');
-	});
+		user = data
+		if(user.isLoggedIn) await goto("/")
+	})
+	const randomStyle = (arr) => {
+		return arr[Math.floor(Math.random()*arr.length)]
+	}
 	const onChange = (e) => {
 		values = { ...values, [e.target.placeholder]: e.target.value };
 		console.dir(e.target);
 	};
 	const submitHandleSingUp = async (e) => {
-		console.log('submitted sign up form values', values);
-		await createUserWithEmailAndPassword(auth, values.email, values.password)
-			.then(async (userCredential) => {
-				const userFirebase = userCredential.user;
-				await updateProfile(userFirebase, { displayName: values.username });
-				console.log('created account in firebase', userFirebase);
-				const mongoDbUserBody = { username: userFirebase.displayName, userId: userFirebase.uid };
-				const createdUser = await mongoDbcreateUser(mongoDbUserBody);
-				console.log('created mongodb user', createdUser);
-				userStore.update((user) => {
-					user.isLoggedIn = true;
-					user.username = createdUser.username;
-					user.userId = createdUser.userId;
-					return user;
-				});
-				console.log(createdUser);
-				goto('/');
+		console.log("submitted sign up form values", values)
+		const photoURL = `https://avatars.dicebear.com/api/${randomStyle(avatarStyles)}/${values.username}.svg?size=200`
+		await createUserWithEmailAndPassword(auth, values.email, values.password).
+    then( async (userCredential) => {
+			const userFirebase = userCredential.user
+			await updateProfile(userFirebase, {
+				displayName: values.username, photoURL})
+			console.log("created account in firebase", userFirebase)
+			const mongoDbUserBody = {username: userFirebase.displayName, userId: userFirebase.uid}
+			const createdUser = await mongoDbcreateUser(mongoDbUserBody)
+			console.log("created mongodb user", createdUser)
+			userStore.update((user) => {
+				user.isLoggedIn = true
+				user.username = createdUser.username
+				user.userId = createdUser.userId
+				user.photoURL = photoURL
+				return user
+			});
+			console.log(createdUser);
+			goto('/');
 			})
 			.catch((err) => {
 				firebaseError = err.code.split('/')[1];
 			});
 	};
 	const submitHandleLogin = async (e) => {
-		disableButton = true;
-		console.log('submitted login form values', values);
+		disableButton = true
+		console.log("submitted login form values", values)
 		await signInWithEmailAndPassword(auth, values.email, values.password)
-			.then((userCredential) => {
-				const userFirebase = userCredential.user;
-				userStore.update((user) => {
-					user.isLoggedIn = true;
-					user.userId = userFirebase.uid;
-					user.username = userFirebase.displayName;
-					return user;
-				});
+    .then((userCredential) => {
+			  const userFirebase = userCredential.user
+			  userStore.update((user) => {
+				user.isLoggedIn = true
+				user.userId = userFirebase.uid
+				user.username = userFirebase.displayName
+				user.photoURL = userFirebase.photoURL
+				return user
 				console.log('logged in user', user);
 				goto('/');
 			})
