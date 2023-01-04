@@ -117,6 +117,7 @@
 								patchLeaderBoard(leaderBoard, { username: user.username, todayStats });
 							});
 						}
+						// update user in DB if new high score set
 						if (user.highestScore < todayStats.score) {
 							patchUser(user.userId, { highestScore: todayStats.score });
 						}
