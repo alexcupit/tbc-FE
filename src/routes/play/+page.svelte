@@ -4,7 +4,14 @@
 	import Results from './Results.svelte';
 	import { browser } from '$app/environment';
 	export let data: PageData;
-	// let questionNumber: number = 0;
+	import { calcScore } from '../../utils/calcScore';
+	import userStore from '../../stores/userStore';
+	import { getUser, patchLeaderBoard, patchUser } from '../../api';
+
+	let user = {};
+	userStore.subscribe((value) => {
+		user = value;
+	});
 
 	if (browser) {
 		if (!localStorage.todayStats) {
@@ -61,9 +68,23 @@
 			$questionNumber += 1;
 			if ($questionNumber === 5) {
 				todayStats.quizCompleted = true;
+				todayStats.date = new Date().toISOString().split('T')[0];
 				todayStats.timeTaken = formattedTime;
+				todayStats.score = calcScore(timer, todayStats.correctAns);
 				localStorage.setItem('todayStats', JSON.stringify(todayStats));
 				$completedCheck = JSON.parse(localStorage.todayStats).quizCompleted;
+
+				if (user.isLoggedIn) {
+					patchUser(user.userId, { todayStats });
+					patchLeaderBoard('global', { username: user.username, todayStats });
+					getUser(user.userId).then((user) => {
+						if (user.leaderBoards.length) {
+							user.leaderBoards.forEach((leaderBoard) => {
+								patchLeaderBoard(leaderBoard, { username: user.username, todayStats });
+							});
+						}
+					});
+				}
 			}
 		}, 1000);
 	};
@@ -72,6 +93,7 @@
 	if (todayStats.quizCompleted === false) {
 		const timerFunction = setInterval(() => {
 			if (todayStats.quizCompleted === true) {
+				// meant to not add 1s to timer after final Q but currently not working, this if statement not accessible.
 				clearInterval(timerFunction);
 			} else {
 				timer++;
