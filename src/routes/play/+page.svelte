@@ -132,7 +132,7 @@
 		{@const questionIndexes = randomIndex()}
 
 		{#if i === $questionNumber}
-			<div class="">
+			<div class="text-center mb-2">
 				<article class="prose">
 					<h2 class="text-center m-2">{question.question}</h2>
 					<h4 class="text-center italic text-secondary mb-2">{question.category}</h4>

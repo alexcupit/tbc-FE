@@ -117,23 +117,22 @@
 		<h2 class="text-center">Create a new account</h2>
 	</article>
 
-	<form
-		class="login flex-col content-center justify-center"
-		on:submit|preventDefault={submitHandleSingUp}
-	>
-		{#each inputs as input}
-			<FormInput props={input} {onChange} value={values[input.label]} {firebaseError} />
-		{/each}
-		<button class="btn btn-primary mb-5">Submit</button>
-	</form>
+	<div class="text-center">
+		<div>
+			<form class="login" on:submit|preventDefault={submitHandleSingUp}>
+				{#each inputs as input}
+					<FormInput props={input} {onChange} value={values[input.label]} {firebaseError} />
+				{/each}
+
+				<button class="btn btn-primary mb-5 self-center">Submit</button>
+			</form>
+		</div>
+	</div>
 {:else}
 	<article class="prose mb-5">
 		<h2>Login</h2>
 	</article>
-	<form
-		class="login flex-col content-center justify-center"
-		on:submit|preventDefault={submitHandleLogin}
-	>
+	<form class="text-center" on:submit|preventDefault={submitHandleLogin}>
 		{#each inputs as input}
 			{#if input.label === 'email' || input.label === 'password'}
 				<div class="login__field">
