@@ -33,7 +33,7 @@
 				alt=""
 			/></a
 		>
-		<a href="/" class="navbar__link"
+		<a href="/leaderboards" class="navbar__link"
 			><img
 				class="navbar__icon"
 				src="https://cdn-icons-png.flaticon.com/512/4489/4489655.png"
