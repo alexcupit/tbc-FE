@@ -46,12 +46,7 @@
 			<ul class="menu menu-horizontal px-1">
 				<li>
 					<a href="/leaderboards"
-						><img
-							src="https://cdn-user-icons.flaticon.com/5712/5712035/1672754140454.svg?token=exp=1672755040~hmac=255d4d1802cfb3ef14e41406d98cf7b5"
-							alt=""
-							height="25"
-							width="25"
-						/></a
+						><img src="src/icons/002-leaderboard.svg" alt="" height="25" width="25" /></a
 					>
 				</li>
 				<li>

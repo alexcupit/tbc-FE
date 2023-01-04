@@ -8,8 +8,6 @@
 	import userStore from '../../stores/userStore';
 	import { getUser, patchLeaderBoard, patchUser } from '../../api';
 
-	let questionRadial: number = 0;
-
 	let user = {};
 	userStore.subscribe((value) => {
 		user = value;
@@ -90,7 +88,6 @@
 
 		setTimeout(() => {
 			$questionNumber += 1;
-			questionRadial += 25;
 			if ($questionNumber === 5) {
 				// update todayStats
 				todayStats.quizCompleted = true;
@@ -179,6 +176,7 @@
 </script>
 
 {#if !$completedCheck}
+	<div />
 	<p class="text-center text-xl text-accent">{formattedTime}</p>
 
 	{#each data.questions as question, i}
@@ -214,12 +212,6 @@
 			</div>
 		{/if}
 	{/each}
-	<div
-		class="radial-progress bg-secondary text-secondary-content border-4 border-secondary"
-		style={`--value:${questionRadial};`}
-	>
-		{questionRadial}%
-	</div>
 {:else}
 	<Results />
 {/if}
