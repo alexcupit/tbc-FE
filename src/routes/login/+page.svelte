@@ -124,8 +124,8 @@
 		{#each inputs as input}
 			<FormInput props={input} {onChange} value={values[input.label]} {firebaseError} />
 		{/each}
+		<button class="btn btn-primary mb-5">Submit</button>
 	</form>
-	<button class="btn btn-primary mb-5">Submit</button>
 {:else}
 	<article class="prose mb-5">
 		<h2>Login</h2>
@@ -141,8 +141,8 @@
 				</div>
 			{/if}
 		{/each}
+		<button class="btn btn-primary mb-5" disabled={disableButton}>submit</button>
 	</form>
-	<button class="btn btn-primary mb-5" disabled={disableButton}>submit</button>
 {/if}
 {#if signUp}
 	<article class="prose">
