@@ -1,7 +1,7 @@
 <script lang="ts">
     import userStore from "../../stores/userStore"
     import { onMount } from "svelte";
-	import { fetchUser, postLeaderBoard, patchUser } from "../../api";
+	import { fetchUser, postLeaderBoard, updateUser } from "../../api";
     import {achievements} from "./badges/achievements"
     import Badge from "../../components/Badge.svelte";
 	import FormInput from "../../components/FormInput.svelte";
@@ -24,7 +24,7 @@
                 addTo: true
             }}
             const newLeaderboard = await postLeaderBoard(body)
-            const updatedUser = await patchUser(user.userId, body2)
+            const updatedUser = await updateUser(user.userId, body2)
             addToLeaderboard = false
             leaderboards = [...leaderboards, value]
             value = ""
