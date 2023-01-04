@@ -119,6 +119,25 @@
 							});
 						}
 					});
+					// update user in DB with relevant achievements
+					if ($currentStreak === 2) {
+						patchUser(user.userId, { achievements: '2 day streak' });
+					}
+					if ($currentStreak === 10) {
+						patchUser(user.userId, { achievements: '10 day streak' });
+					}
+					if (todayStats.score >= 50) {
+						patchUser(user.userId, { achievements: 'score 50' });
+					}
+					if (todayStats.score >= 90) {
+						patchUser(user.userId, { achievements: 'score 90' });
+					}
+					if (timer <= 20) {
+						patchUser(user.userId, { achievements: 'under 20s' });
+					}
+					if (timer <= 10) {
+						patchUser(user.userId, { achievements: 'under 10s' });
+					}
 				}
 			}
 		}, 1000);
