@@ -117,26 +117,26 @@
 								patchLeaderBoard(leaderBoard, { username: user.username, todayStats });
 							});
 						}
+						// update user in DB with relevant achievements
+						if ($currentStreak === 2 && !user.achievements.includes('2 day streak')) {
+							patchUser(user.userId, { achievements: '2 day streak' });
+						}
+						if ($currentStreak === 10 && !user.achievements.includes('10 day streak')) {
+							patchUser(user.userId, { achievements: '10 day streak' });
+						}
+						if (todayStats.score >= 50 && !user.achievements.includes('score 50')) {
+							patchUser(user.userId, { achievements: 'score 50' });
+						}
+						if (todayStats.score >= 90 && !user.achievements.includes('score 90')) {
+							patchUser(user.userId, { achievements: 'score 90' });
+						}
+						if (timer <= 20 && !user.achievements.includes('under 20s')) {
+							patchUser(user.userId, { achievements: 'under 20s' });
+						}
+						if (timer <= 10 && !user.achievements.includes('under 10s')) {
+							patchUser(user.userId, { achievements: 'under 10s' });
+						}
 					});
-					// update user in DB with relevant achievements
-					if ($currentStreak === 2) {
-						patchUser(user.userId, { achievements: '2 day streak' });
-					}
-					if ($currentStreak === 10) {
-						patchUser(user.userId, { achievements: '10 day streak' });
-					}
-					if (todayStats.score >= 50) {
-						patchUser(user.userId, { achievements: 'score 50' });
-					}
-					if (todayStats.score >= 90) {
-						patchUser(user.userId, { achievements: 'score 90' });
-					}
-					if (timer <= 20) {
-						patchUser(user.userId, { achievements: 'under 20s' });
-					}
-					if (timer <= 10) {
-						patchUser(user.userId, { achievements: 'under 10s' });
-					}
 				}
 			}
 		}, 1000);
