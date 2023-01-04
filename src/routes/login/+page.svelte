@@ -1,41 +1,48 @@
 <script lang="ts">
-	import { goto } from "$app/navigation";
-    import userStore from "../../stores/userStore"
-	import FormInput from "../../components/FormInput.svelte"
-	import app from "../../firebase/config"
-	import {mongoDbcreateUser} from "../../api"
-	import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth"
-	const auth = getAuth()
+	import { goto } from '$app/navigation';
+	import userStore from '../../stores/userStore';
+	import FormInput from '../../components/FormInput.svelte';
+	import app from '../../firebase/config';
+	import { mongoDbcreateUser } from '../../api';
+	import {
+		getAuth,
+		createUserWithEmailAndPassword,
+		signInWithEmailAndPassword,
+		updateProfile
+	} from 'firebase/auth';
+	const auth = getAuth();
 	let values = {
-		username: "",
-		email: "",
-		password: ""
-	}
-	let inputs = [{
-		label : "username", 
-		placeholder: "username",
-		type: "text",
-		error: "3-16 characters",
-		pattern: "[a-zA-Z0-9]{3,16}",
-		required: true
+		username: '',
+		email: '',
+		password: ''
+	};
+	let inputs = [
+		{
+			label: 'username',
+			placeholder: 'username',
+			type: 'text',
+			error: '3-16 characters',
+			pattern: '[a-zA-Z0-9]{3,16}',
+			required: true
 		},
 		{
-		label : "email", 
-		placeholder: "email",
-		type: "text",
-		error: "invalid email",
-		pattern: "[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$",
-		required: true
+			label: 'email',
+			placeholder: 'email',
+			type: 'text',
+			error: 'invalid email',
+			pattern: '[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$',
+			required: true
 		},
 		{
-		label : "password", 
-		placeholder: "password",
-		type: "password",
-		error: "8 or more characters",
-		required: true,
-		pattern: "[a-zA-Z0-9]{8,}"
+			label: 'password',
+			placeholder: 'password',
+			type: 'password',
+			error: '8 or more characters',
+			required: true,
+			pattern: '[a-zA-Z0-9]{8,}'
 		}
 	]
+	let avatarStyles = ["adventurer", "adventurer-neutral", "bottts", "micah", "big-smile"]
 	let  user: object;
 	let signUp = false
 	const login = true
@@ -44,16 +51,22 @@
 	userStore.subscribe(async (data) => {
 		user = data
 		if(user.isLoggedIn) await goto("/")
-	}) 
-	const onChange = (e) => {
-		values = {...values, [e.target.placeholder]: e.target.value}
-		console.dir(e.target)
+	})
+	const randomStyle = (arr) => {
+		return arr[Math.floor(Math.random()*arr.length)]
 	}
+	const onChange = (e) => {
+		values = { ...values, [e.target.placeholder]: e.target.value };
+		console.dir(e.target);
+	};
 	const submitHandleSingUp = async (e) => {
 		console.log("submitted sign up form values", values)
-		await createUserWithEmailAndPassword(auth, values.email, values.password).then( async (userCredential) => {
+		const photoURL = `https://avatars.dicebear.com/api/${randomStyle(avatarStyles)}/${values.username}.svg?size=200`
+		await createUserWithEmailAndPassword(auth, values.email, values.password)
+    	.then( async (userCredential) => {
 			const userFirebase = userCredential.user
-			await updateProfile(userFirebase, {displayName: values.username})
+			await updateProfile(userFirebase, {
+				displayName: values.username, photoURL})
 			console.log("created account in firebase", userFirebase)
 			const mongoDbUserBody = {username: userFirebase.displayName, userId: userFirebase.uid}
 			const createdUser = await mongoDbcreateUser(mongoDbUserBody)
@@ -62,81 +75,68 @@
 				user.isLoggedIn = true
 				user.username = createdUser.username
 				user.userId = createdUser.userId
+				user.photoURL = photoURL
 				return user
-			})
-			console.log(createdUser)
-			goto("/")
-			}).catch((err) => {
-				firebaseError = err.code.split("/")[1]
+			});
+			console.log(createdUser);
+			goto('/');
 		})
-	}
+		.catch((err) => {
+			firebaseError = err.code.split('/')[1];
+		});
+	};
 	const submitHandleLogin = async (e) => {
 		disableButton = true
 		console.log("submitted login form values", values)
-		await signInWithEmailAndPassword(auth, values.email, values.password).then((userCredential) => {
+		await signInWithEmailAndPassword(auth, values.email, values.password)
+    	.then((userCredential) => {
 			const userFirebase = userCredential.user
 			userStore.update((user) => {
 				user.isLoggedIn = true
 				user.userId = userFirebase.uid
 				user.username = userFirebase.displayName
+				user.photoURL = userFirebase.photoURL
 				return user
 			})
-			console.log("logged in user", user)
-			goto("/")
-		}).catch((err) => {
-			firebaseError = err.code.split("/")[1]
-			disableButton = false
+			console.log('logged in user', user);
+			goto('/');
 		})
-	}
+	.catch((err) => {
+		firebaseError = err.code.split('/')[1];
+		disableButton = false;
+	});
+	};
 </script>
 
 {#if signUp}
-<h2>Create a new account</h2>
+	<div class="form content-center">
+		<h2 class="text-center">Create a new account</h2>
 
-<form class="sign-up" on:submit|preventDefault={submitHandleSingUp}>
-	{#each inputs as input}
-		<FormInput
-			props={input}
-			onChange={onChange}
-			value={values[input.label]}
-			{firebaseError}
-		></FormInput>
-	{/each}
-	<button>submit</button>
-</form>
+		<form on:submit|preventDefault={submitHandleSingUp}>
+			{#each inputs as input}
+				<FormInput props={input} {onChange} value={values[input.label]} {firebaseError} />
+			{/each}
+			<button class="btn btn-primary">Submit</button>
+		</form>
+	</div>
 {:else}
-<h2>Login</h2>
-<form class="login" on:submit|preventDefault={submitHandleLogin}>
-	{#each inputs as input}
-		{#if input.label === "email" || input.label === "password"}
-			<FormInput
-				props={input}
-				onChange={onChange}
-				value={values[input.label]}
-				{login}
-				{firebaseError}
-			></FormInput>
-		{/if}
-	{/each}
-	<button disabled={disableButton}>submit</button>
-</form>
+	<h2>Login</h2>
+	<form class="login" on:submit|preventDefault={submitHandleLogin}>
+		{#each inputs as input}
+			{#if input.label === 'email' || input.label === 'password'}
+				<div class="login__field">
+					<FormInput props={input} {onChange} value={values[input.label]} {login} {firebaseError} />
+				</div>
+			{/if}
+		{/each}
+		<button class="btn btn-primary" disabled={disableButton}>submit</button>
+	</form>
 {/if}
-{#if signUp} 
-	<h4 on:click={() => signUp = false}>I have an account</h4>
+{#if signUp}
+	<h4 on:click={() => (signUp = false)}>I have an account</h4>
 {:else}
-	<h4 on:click={() => signUp = true}>sign up</h4>
+	<h4 on:click={() => (signUp = true)}>sign up</h4>
 {/if}
+
 <style>
-.sign-up {
-	display: flex;
-	flex-direction: column;
-}
-.login {
-	display: flex;
-	flex-direction: column;
-}
-h4 {
-	cursor: pointer;
-}
-
 </style>
