@@ -33,7 +33,6 @@
 		}
 		if (!localStorage.dateLastPlayed) {
 			localStorage.setItem('dateLastPlayed', '');
-			// localStorage.dateLastPlayed = '2023-01-03';
 		}
 	}
 
