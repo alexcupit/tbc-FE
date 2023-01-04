@@ -13,33 +13,41 @@
 </script>
 
 <div class="results">
-	<p>RESULTS</p>
-	<h2>Today, you scored {todayStats.score}</h2>
-	<h3>you got {todayStats.correctAns} right!</h3>
-	<h3>in a total time of {todayStats.timeTaken}</h3>
+	<article class="prose">
+		<h2 class="text-center text-primary">RESULTS</h2>
+		<h3 class="text-center">
+			Today, you scored <span class="text-accent">{todayStats.score}</span>.
+		</h3>
+		<h3 class="text-center">
+			You got <span class="text-accent">{todayStats.correctAns}/5</span> right!
+		</h3>
+		<h3 class="text-center">
+			In a total time of <span class="text-accent">{todayStats.timeTaken}</span>.
+		</h3>
+	</article>
 	<br />
 	<div class="grid grid-flow-col gap-5 text-center auto-cols-max">
 		<div class="flex flex-col">
-			<span class="countdown font-mono text-5xl">
+			<span class="countdown font-mono text-5xl text-secondary">
 				<span style="--value:{hours}" />
 			</span>
-			hours
+			<span class="text-secondary">hour</span>
 		</div>
 		<div class="flex flex-col">
-			<span class="countdown font-mono text-5xl">
+			<span class="countdown font-mono text-5xl text-secondary">
 				<span style="--value:{mins};" />
 			</span>
-			min
+			<span class="text-secondary">min</span>
 		</div>
 		<div class="flex flex-col">
-			<span class="countdown font-mono text-5xl">
+			<span class="countdown font-mono text-5xl text-secondary">
 				<span style="--value:{secs};" />
 			</span>
-			sec
+			<span class="text-secondary">sec</span>
 		</div>
 	</div>
 	<br />
-	<p>until the next quiz!</p>
+	<p class="text-center">Until the next quiz!</p>
 </div>
 
 <style></style>
