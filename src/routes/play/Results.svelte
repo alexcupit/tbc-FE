@@ -24,6 +24,10 @@
 		<h3 class="text-center">
 			In a total time of <span class="text-accent">{todayStats.timeTaken}</span>.
 		</h3>
+		<h3 class="text-center">
+			Your current streak is <span class="text-accent">{localStorage.currentStreak}</span>
+			day{localStorage.currentStreak > 1 ? 's' : ''}.
+		</h3>
 	</article>
 	<br />
 	<div class="grid grid-flow-col gap-5 text-center auto-cols-max">
