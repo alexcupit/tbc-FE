@@ -49,7 +49,7 @@
 
 <!-- <div id="cont">
 	{#await result then leaderboard}
-		<p>TODAY'S LEADERBOARD</p>
+		<p>TODAY'S {leaderboardName.toUpperCase()} LEADERBOARD</p>
 		<p id="date">{leaderboard.date.split('T')[0]}</p>
 		<div id="title">
 			<div>USERNAME</div>
