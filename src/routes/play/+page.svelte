@@ -117,6 +117,10 @@
 								patchLeaderBoard(leaderBoard, { username: user.username, todayStats });
 							});
 						}
+						// update user in DB if new high score set
+						if (user.highestScore < todayStats.score) {
+							patchUser(user.userId, { highestScore: todayStats.score });
+						}
 						// update user in DB with relevant achievements
 						if ($currentStreak === 2 && !user.achievements.includes('2 day streak')) {
 							patchUser(user.userId, { achievements: '2 day streak' });
