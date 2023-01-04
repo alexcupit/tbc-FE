@@ -30,7 +30,7 @@
 				<li>
 					<a href="/"
 						><img
-							src="https://cdn-user-icons.flaticon.com/5712/5712035/1672754140454.svg?token=exp=1672755040~hmac=255d4d1802cfb3ef14e41406d98cf7b5"
+							src=""
 							alt=""
 							height="25"
 							width="25"
@@ -40,7 +40,7 @@
 				<li>
 					<a href="#my-modal-2"
 						><img
-							src="https://cdn-user-icons.flaticon.com/5712/5712035/1672754279536.svg?token=exp=1672755179~hmac=cdaab0645fac51bd3ac80d0e02a6f755"
+							src=""
 							alt=""
 							height="25"
 							width="25"
@@ -51,7 +51,7 @@
 					{#if !user.isLoggedIn}
 						<a href="/login"
 							><img
-								src="https://cdn-user-icons.flaticon.com/5712/5712035/1672754056535.svg?token=exp=1672754971~hmac=bc819bbfcbf3e9532337163df7e67317"
+								src=""
 								alt=""
 								height="25"
 								width="25"
@@ -60,7 +60,7 @@
 					{:else}
 						<a href="/profile"
 							><img
-								src="https://cdn-user-icons.flaticon.com/5712/5712035/1672754056535.svg?token=exp=1672754971~hmac=bc819bbfcbf3e9532337163df7e67317"
+								src=""
 								alt=""
 								height="25"
 								width="25"
