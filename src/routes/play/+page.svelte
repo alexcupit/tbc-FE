@@ -8,6 +8,8 @@
 	import userStore from '../../stores/userStore';
 	import { getUser, patchLeaderBoard, patchUser } from '../../api';
 
+	let questionRadial: number = 0;
+
 	let user = {};
 	userStore.subscribe((value) => {
 		user = value;
@@ -66,6 +68,7 @@
 
 		setTimeout(() => {
 			$questionNumber += 1;
+			questionRadial += 25;
 			if ($questionNumber === 5) {
 				todayStats.quizCompleted = true;
 				todayStats.date = new Date().toISOString().split('T')[0];
@@ -122,40 +125,50 @@
 </script>
 
 {#if !$completedCheck}
-	<p>{formattedTime}</p>
+	<p class="text-center text-xl text-accent">{formattedTime}</p>
+
 	{#each data.questions as question, i}
 		{@const answers = [...question.incorrectAnswers, question.correctAnswer]}
 		{@const questionIndexes = randomIndex()}
 
 		{#if i === $questionNumber}
-			<div class="question">
-				<h2>{question.question}</h2>
-				<h4>{question.category}</h4>
-				<button class="btn btn-primary" on:click={handleSubmitAnswer}
-					>{answers[questionIndexes[0]]}</button
-				>
-				<button class="btn btn-primary" on:click={handleSubmitAnswer}
-					>{answers[questionIndexes[1]]}</button
-				>
-				<button class="btn btn-primary" on:click={handleSubmitAnswer}
-					>{answers[questionIndexes[2]]}</button
-				>
-				<button class="btn btn-primary" on:click={handleSubmitAnswer}
-					>{answers[questionIndexes[3]]}</button
-				>
+			<div class="">
+				<article class="prose">
+					<h2 class="text-center m-2">{question.question}</h2>
+					<h4 class="text-center italic text-secondary mb-2">{question.category}</h4>
+				</article>
+				<div class="">
+					<button class="btn btn-primary btn-wide mb-3" on:click={handleSubmitAnswer}
+						>{answers[questionIndexes[0]]}</button
+					>
+				</div>
+				<div>
+					<button class="btn btn-primary btn-wide mb-3" on:click={handleSubmitAnswer}
+						>{answers[questionIndexes[1]]}</button
+					>
+				</div>
+				<div>
+					<button class="btn btn-primary btn-wide mb-3" on:click={handleSubmitAnswer}
+						>{answers[questionIndexes[2]]}</button
+					>
+				</div>
+				<div>
+					<button class="btn btn-primary btn-wide mb-3" on:click={handleSubmitAnswer}
+						>{answers[questionIndexes[3]]}</button
+					>
+				</div>
 			</div>
 		{/if}
 	{/each}
+	<div
+		class="radial-progress bg-secondary text-secondary-content border-4 border-secondary"
+		style={`--value:${questionRadial};`}
+	>
+		{questionRadial}%
+	</div>
 {:else}
 	<Results />
 {/if}
 
 <style>
-	:global(.answer--correct) {
-		background-color: green;
-	}
-
-	:global(.answer--incorrect) {
-		background-color: red;
-	}
 </style>
