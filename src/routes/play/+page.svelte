@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { writable } from 'svelte/store';
+	import { writable, type Writable } from 'svelte/store';
 	import Results from './Results.svelte';
 	import { browser } from '$app/environment';
 	export let data: PageData;
@@ -15,6 +15,11 @@
 		user = value;
 	});
 
+	const today = new Date().toISOString().split('T')[0];
+	// type stats = { date: string; score: number; timeTaken: string; correctAns: number };
+	let todayStats = { date: '', score: 0, timeTaken: '', correctAns: 0, quizCompleted: false }; // this will reset on each page load
+
+	// for player's initial vist, create the below in localStorage
 	if (browser) {
 		if (!localStorage.todayStats) {
 			localStorage.setItem(
@@ -25,6 +30,12 @@
 		if (!localStorage.questionNumber) {
 			localStorage.setItem('questionNumber', '0');
 		}
+		if (!localStorage.currentStreak) {
+			localStorage.setItem('currentStreak', '0');
+		}
+		if (!localStorage.dateLastPlayed) {
+			localStorage.setItem('dateLastPlayed', '');
+		}
 	}
 
 	export const completedCheck = writable<boolean>(
@@ -34,17 +45,28 @@
 		if (browser) return (JSON.parse(localStorage.todayStats).quizCompleted = value);
 	});
 
-	export let questionNumber: any;
+	export let questionNumber: Writable<number>;
+	export let currentStreak: Writable<number>;
 	if (browser) {
-		questionNumber = writable<number>(JSON.parse(localStorage.questionNumber));
-		questionNumber.subscribe((value: number) => {
-			if (browser) return (localStorage.questionNumber = value);
+		questionNumber = writable(JSON.parse(localStorage.questionNumber));
+		questionNumber.subscribe((value) => {
+			return (localStorage.questionNumber = value);
 		});
+		currentStreak = writable(JSON.parse(localStorage.currentStreak));
+		currentStreak.subscribe((value) => {
+			return (localStorage.currentStreak = value);
+		});
+		// check how long since last played and if streak needs resetting
+		let timeSinceLastPlay =
+			new Date().setUTCHours(0, 0, 0, 0) -
+			new Date(localStorage.dateLastPlayed).setUTCHours(0, 0, 0, 0);
+
+		if (timeSinceLastPlay > 86400000) {
+			$currentStreak = 0;
+			$completedCheck = false;
+			localStorage.setItem('todayStats', JSON.stringify(todayStats));
+		}
 	}
-
-	let todayStats = { date: '', score: 0, timeTaken: '', correctAns: 0, quizCompleted: false }; // this will reset on each page load, needs fixing!
-
-	// type stats = { date: string; score: number; timeTaken: string; correctAns: number };
 
 	const handleSubmitAnswer = (e: Event) => {
 		const target = e.target as HTMLElement;
@@ -70,15 +92,27 @@
 			$questionNumber += 1;
 			questionRadial += 25;
 			if ($questionNumber === 5) {
+				// update todayStats
 				todayStats.quizCompleted = true;
-				todayStats.date = new Date().toISOString().split('T')[0];
+				todayStats.date = today;
 				todayStats.timeTaken = formattedTime;
 				todayStats.score = calcScore(timer, todayStats.correctAns);
 				localStorage.setItem('todayStats', JSON.stringify(todayStats));
 				$completedCheck = JSON.parse(localStorage.todayStats).quizCompleted;
 
+				// update streak on quiz completion
+				$currentStreak += 1;
+
+				localStorage.setItem('dateLastPlayed', today);
+
 				if (user.isLoggedIn) {
-					patchUser(user.userId, { todayStats });
+					//update user in DB
+					patchUser(user.userId, {
+						todayStats,
+						dateLastPlayed: today,
+						currentStreak: $currentStreak
+					});
+					//update leaderboards in DB
 					patchLeaderBoard('global', { username: user.username, todayStats });
 					getUser(user.userId).then((user) => {
 						if (user.leaderBoards.length) {
@@ -86,12 +120,32 @@
 								patchLeaderBoard(leaderBoard, { username: user.username, todayStats });
 							});
 						}
+						// update user in DB with relevant achievements
+						if ($currentStreak === 2 && !user.achievements.includes('2 day streak')) {
+							patchUser(user.userId, { achievements: '2 day streak' });
+						}
+						if ($currentStreak === 10 && !user.achievements.includes('10 day streak')) {
+							patchUser(user.userId, { achievements: '10 day streak' });
+						}
+						if (todayStats.score >= 50 && !user.achievements.includes('score 50')) {
+							patchUser(user.userId, { achievements: 'score 50' });
+						}
+						if (todayStats.score >= 90 && !user.achievements.includes('score 90')) {
+							patchUser(user.userId, { achievements: 'score 90' });
+						}
+						if (timer <= 20 && !user.achievements.includes('under 20s')) {
+							patchUser(user.userId, { achievements: 'under 20s' });
+						}
+						if (timer <= 10 && !user.achievements.includes('under 10s')) {
+							patchUser(user.userId, { achievements: 'under 10s' });
+						}
 					});
 				}
 			}
 		}, 1000);
 	};
 
+	// Increments and formats a timer to count up for the duration of the quiz
 	let timer = 0;
 	if (todayStats.quizCompleted === false) {
 		const timerFunction = setInterval(() => {
@@ -103,13 +157,13 @@
 			}
 		}, 1000);
 	}
-
 	$: minutes = Math.floor(timer / 60);
 	$: seconds = Math.floor(timer - minutes * 60);
 	$: formattedTime = `${minutes < 10 ? `0${minutes}` : minutes}:${
 		seconds < 10 ? `0${seconds}` : seconds
 	}`;
 
+	// Creates and array of four random numbers 0-3 that will be used to randomise the position of the correct answer for each question.
 	const randomIndex = () => {
 		const arr = [];
 		const uniqueNumbers = new Set();
