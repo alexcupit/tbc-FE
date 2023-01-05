@@ -17,22 +17,10 @@
 	};
 </script>
 
-{#if showError & !login}
-	<span class="error">{error}</span>
-{/if}
-{#if showError & login & (label === 'email')}
-	<span class="error">{error}</span>
-{/if}
-<!-- server side validation -->
-{#if (firebaseError === 'user-not-found') & (label === 'email')}
-	<span class="error">email incorrect</span>
-{:else if (firebaseError === 'wrong-password') & (label === 'password')}
-	<span class="error">password incorrect</span>
-{:else if (firebaseError === 'email-already-in-use') & (label === 'email')}
-	<span class="error">Email already exists</span>
-{/if}
-<label class="input-group content-center justify-center mb-5">
-	<span>{label}</span>
+<label class=" justify-center mb-5 form-control">
+	<div class="label">
+		<span class="label-text">{label}</span>
+	</div>
 	<input
 		class="input input-bordered"
 		{placeholder}
@@ -49,6 +37,20 @@
 		{pattern}
 		{focused}
 	/>
+	{#if showError & !login}
+		<span class="error text-left">{error}</span>
+	{/if}
+	{#if showError & login & (label === 'email')}
+		<span class="error text-left">{error}</span>
+	{/if}
+	<!-- server side validation -->
+	{#if (firebaseError === 'user-not-found') & (label === 'email')}
+		<span class="error text-left">email not found, please sign up</span>
+	{:else if (firebaseError === 'wrong-password') & (label === 'password')}
+		<span class="error text-left">password incorrect</span>
+	{:else if (firebaseError === 'email-already-in-use') & (label === 'email')}
+		<span class="error text-left">Email already exists</span>
+	{/if}
 </label>
 
 <!-- client side validation -->
