@@ -82,6 +82,7 @@
 					user.photoURL = photoURL;
 					return user;
 				});
+				localStorage.setItem('user', JSON.stringify(user));
 				console.log(createdUser);
 				goto('/');
 			})
@@ -102,6 +103,7 @@
 					user.photoURL = userFirebase.photoURL;
 					return user;
 				});
+				localStorage.setItem('user', JSON.stringify(user));
 				console.log('logged in user', user);
 				goto('/');
 			})
