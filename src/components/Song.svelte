@@ -23,8 +23,8 @@
 <div
 	id="start_stop"
 	on:click={handlePlay}
-	class="btn btn-outline btn-accent"
-	style="margin-left:1.5em; opacity:0.7"
+	class="btn btn-outline btn-accent mt-5"
+	style="opacity:0.7"
 >
 	<i class="fa-solid fa-play" />
 	<i class="fa-solid fa-pause" />

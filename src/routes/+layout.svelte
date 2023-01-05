@@ -8,9 +8,11 @@
 	<Nav />
 	<main class="main">
 		<slot />
+		<div class="song">
+			<Song />
+		</div>
 	</main>
 </div>
-<Song />
 
 <style>
 	.app {
@@ -23,6 +25,18 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		margin: 20vh 5vw;
+		margin: 10 vh 5vw;
+	}
+
+	.song {
+		align-self: flex-start;
+		margin-left: 1.5rem;
+	}
+
+	@media only screen and (max-width: 600px) {
+		.song {
+			margin: 0;
+			align-self: center;
+		}
 	}
 </style>
