@@ -40,7 +40,11 @@
 			<img src={user.photoURL} alt="profile picture" />
 			<div>
 				<p>{userStats.username} <span>🖊️</span></p>
-				<p>Last played {userStats.dateLastPlayed}</p>
+				<br />
+				{#if userStats.dateLastPlayed}
+					<p>Last played {userStats.dateLastPlayed}</p>
+				{/if}
+				<br />
 			</div>
 		</div>
 		<div class="stats">
@@ -57,7 +61,8 @@
 				<p>highest score</p>
 			</div>
 		</div>
-		<h2>statistics</h2>
+		<br />
+		<h2>achievements</h2>
 		<div class="achiements-container">
 			{#each achievements as badge}
 				<div class="achievement">
@@ -65,7 +70,8 @@
 				</div>
 			{/each}
 		</div>
-		<h2>achievements</h2>
+		<br />
+		<h2>leaderboards</h2>
 		<div class="leaderboards">
 			{#each leaderboards as leaderboard}
 				<a href={`/leaderboards/${leaderboard}`}>
@@ -86,13 +92,13 @@
 							}}
 							{value}
 							required
+							placeholder="new leaderboard name"
 						/>
 					</label>
 					<button>add</button>
 				</form>
 			{/if}
 		</div>
-		<h2>leaderboards</h2>
 	</div>
 {:else}
 	<h2>loading</h2>
@@ -111,6 +117,7 @@
 	.profile {
 		display: flex;
 		align-items: center;
+		flex-direction: column;
 	}
 	.profile span {
 		cursor: pointer;
