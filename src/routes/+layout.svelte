@@ -1,6 +1,7 @@
 <script lang="ts">
 	import '.././global.css';
 	import Nav from '../components/Nav.svelte';
+	import Song from '../components/Song.svelte';
 </script>
 
 <div class="app">
@@ -9,6 +10,7 @@
 		<slot />
 	</main>
 </div>
+<Song />
 
 <style>
 	.app {
