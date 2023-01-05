@@ -31,8 +31,10 @@
 {:else if (firebaseError === 'email-already-in-use') & (label === 'email')}
 	<span class="error">Email already exists</span>
 {/if}
-<label class="input-group content-center justify-center mb-5">
-	<span>{label}</span>
+<label class=" justify-center mb-5 form-control">
+	<div class="label">
+		<span class="label-text">{label}</span>
+	</div>
 	<input
 		class="input input-bordered"
 		{placeholder}

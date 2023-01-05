@@ -54,4 +54,10 @@
 	<p class="text-center">Until the next quiz!</p>
 </div>
 
-<style></style>
+<style>
+	.results {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+</style>
