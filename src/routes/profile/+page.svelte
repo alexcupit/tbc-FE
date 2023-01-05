@@ -17,6 +17,7 @@
 		userStats = await fetchUser(user.userId);
 		leaderboards = [...userStats.leaderBoards];
 	});
+
 	const submitHandleSingUp = async () => {
 		console.log('creating leaderboard', value);
 		const body = { leaderboardName: value };
