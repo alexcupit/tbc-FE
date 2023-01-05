@@ -5,6 +5,8 @@
 	import { achievements } from './badges/achievements';
 	import Badge from '../../components/Badge.svelte';
 	import FormInput from '../../components/FormInput.svelte';
+	import { goto } from '$app/navigation';
+
 	console.log(achievements);
 	let user;
 	let userStats;
@@ -15,6 +17,7 @@
 	onMount(async () => {
 		userStats = await fetchUser(user.userId);
 		leaderboards = ['global', ...userStats.leaderBoards];
+		leaderboards = [...userStats.leaderBoards];
 	});
 	const submitHandleSingUp = async () => {
 		console.log('creating leaderboard', value);
@@ -31,6 +34,28 @@
 		leaderboards = [...leaderboards, value];
 		value = '';
 	};
+
+	const deleteLeaderboard = async (name) => {
+		const index = leaderboards.indexOf(name);
+		console.log(index);
+		const body = {
+			leaderBoards: {
+				leaderBoard: name,
+				addTo: false
+			}
+		};
+		const updatedUser = await updateUser(user.userId, body);
+		leaderboards.splice(index, 1);
+		leaderboards = leaderboards;
+	};
+	const logout = async () => {
+		userStore.update((user) => {
+			(user.isLoggedIn = false), (user.username = ''), (user.userId = ''), (user.photoURL = '');
+			return user;
+		});
+		goto('/');
+	};
+
 </script>
 
 {#if userStats}
@@ -41,6 +66,11 @@
 			<div>
 				<p>{userStats.username} <span>🖊️</span></p>
 				<p>Last played {userStats.dateLastPlayed}</p>
+				<br />
+				{#if userStats.dateLastPlayed}
+					<p>Last played {userStats.dateLastPlayed}</p>
+				{/if}
+				<br />
 			</div>
 		</div>
 		<div class="stats">
@@ -58,6 +88,11 @@
 			</div>
 		</div>
 		<h2>statistics</h2>
+				<p>high score</p>
+			</div>
+		</div>
+		<br />
+		<h2>achievements</h2>
 		<div class="achiements-container">
 			{#each achievements as badge}
 				<div class="achievement">
@@ -92,6 +127,45 @@
 		</div>
 		<h2>leaderboards</h2>
 	</div>
+		<br />
+		<h2>leaderboards</h2>
+		<div class="leaderboards-container">
+			<div class="leaderboards">
+				{#each leaderboards as leaderboard}
+					<a href={`/leaderboards/${leaderboard}`}>
+						<div class="badge badge-lg badge-accent">{leaderboard}</div>
+					</a>
+					{#if addToLeaderboard}
+						<span on:click={deleteLeaderboard(leaderboard)}>x</span>
+					{/if}
+				{/each}
+			</div>
+			<div class="add-to-leaderboard">
+				{#if !addToLeaderboard}
+					<span class="" on:click={(e) => (addToLeaderboard = true)}>+</span>
+				{/if}
+				{#if addToLeaderboard}
+					<form on:submit|preventDefault={submitHandleSingUp}>
+						<label>
+							<input
+								class="input input-bordered input-sm w-full max-w-xs"
+								type="text"
+								on:change={(e) => {
+									value = e.target.value;
+								}}
+								{value}
+								required
+								placeholder="new leaderboard name"
+							/>
+						</label>
+						<button>add</button>
+					</form>
+				{/if}
+			</div>
+		</div>
+		<br />
+		<button class="btn btn-wide btn-secondary" on:click={logout}>logout</button>
+	</div>
 {:else}
 	<div class="loader">
 		<div class="loader-inner">
@@ -122,10 +196,12 @@
 		border-radius: 10px;
 		padding: 40px;
 		margin-top: 400px;
+		align-items: center;
 	}
 	.profile {
 		display: flex;
 		align-items: center;
+		flex-direction: column;
 	}
 	.profile span {
 		cursor: pointer;
@@ -156,6 +232,7 @@
 		display: flex;
 		flex-wrap: wrap;
 		height: fit-content;
+		justify-content: center;
 	}
 	.achievement {
 		display: flex;
@@ -282,5 +359,34 @@
 		100% {
 			transform: rotate(360deg);
 		}
+	.leaderboards-container {
+		display: flex;
+		align-items: center;
+	}
+	.leaderboards-container > * {
+		margin: 5px;
+	}
+	.leaderboards-container span {
+		cursor: pointer;
+	}
+	.leaderboards-container form {
+		display: flex;
+	}
+	.leaderboards-container form > * {
+		margin: 5px;
+	}
+	.add-to-leaderboard {
+		display: flex;
+	}
+	.leaderboards {
+		display: flex;
+		flex-wrap: wrap;
+		max-width: 260px;
+	}
+	.leaderboards > * {
+		margin: 5px;
+	}
+	.leaderboards > span {
+		margin: 1;
 	}
 </style>

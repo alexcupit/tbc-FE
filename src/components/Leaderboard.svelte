@@ -15,6 +15,7 @@
 	let result: any;
 	let position = 0;
 	let today = new Date().toISOString().split('T')[0];
+	let [year, month, day] = today.split('-');
 
 	onMount(async () => {
 		result = await fetchLeaderboard(leaderboardName);
@@ -25,6 +26,7 @@
 		return (position += 1);
 	};
 </script>
+
 
 {#if !isLoading}
 	<article class="prose">
@@ -103,27 +105,8 @@
 	</div>
 {/if}
 
-<!-- <div id="cont">
-	{#await result then leaderboard}
-		<p>TODAY'S {leaderboardName.toUpperCase()} LEADERBOARD</p>
-		<p id="date">{leaderboard.date.split('T')[0]}</p>
-		<div id="title">
-			<div>USERNAME</div>
-			<div>SCORE</div>
-			<div>TIME</div>
-			<div>ANSWERS</div>
-		</div>
-		{#each leaderboard.members as member}
-			<div id="cont-item">
-				<div>{member.username}</div>
-				<div>{member.todayStats.score}</div>
-				<div>{member.todayStats.timeTaken}</div>
-				<div>{member.todayStats.correctAns}</div>
-			</div>
-		{/each}
-	{/await}
-</div> -->
 <style>
+
 	.loader-inner {
 		bottom: 0;
 		height: 60px;
@@ -242,4 +225,6 @@
 		grid-template-columns: 25% 25% 25% 25%;
 		text-align: right;
 	} */
+
+
 </style>
