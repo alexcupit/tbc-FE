@@ -1,7 +1,7 @@
 <script lang="ts">
 	import userStore from '../../stores/userStore';
 	import { onMount } from 'svelte';
-	import { fetchUser, postLeaderBoard, updateUser } from '../../api';
+	import { fetchUser, postLeaderBoard, updateUser,patchLeaderBoard } from '../../api';
 	import { achievements } from './badges/achievements';
 	import Badge from '../../components/Badge.svelte';
 	import FormInput from '../../components/FormInput.svelte';
@@ -33,6 +33,10 @@
 		};
 		const newLeaderboard = await postLeaderBoard(body);
 		const updatedUser = await updateUser(user.userId, body2);
+        const addLeaderMemerber = await patchLeaderBoard(value, {
+					username: user.username,
+					todayStats: JSON.parse(localStorage.todayStats)
+				})
 		addToLeaderboard = false;
 		leaderboards = [...leaderboards, value];
 		value = '';
@@ -46,6 +50,7 @@
 				addTo: false
 			}
 		};
+        
 		const updatedUser = await updateUser(user.userId, body);
 		leaderboards.splice(index, 1);
 		leaderboards = leaderboards;
