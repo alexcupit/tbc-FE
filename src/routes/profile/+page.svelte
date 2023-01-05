@@ -5,6 +5,7 @@
     import {achievements} from "./badges/achievements"
     import Badge from "../../components/Badge.svelte";
 	import FormInput from "../../components/FormInput.svelte";
+	import { goto } from "$app/navigation";
     console.log(achievements)
     let user;
     let userStats
@@ -29,6 +30,27 @@
             leaderboards = [...leaderboards, value]
             value = ""
     }
+    const deleteLeaderboard = async (name) => {
+        const index = leaderboards.indexOf(name)
+        console.log(index)
+        const body = {leaderBoards: {
+            leaderBoard: name,
+            addTo: false
+        }}
+        const updatedUser = await updateUser(user.userId, body)
+        leaderboards.splice(index, 1)
+        leaderboards = leaderboards
+    }
+    const logout = async () => {
+        userStore.update((user) => {
+            user.isLoggedIn = false,
+            user.username = "",
+            user.userId = "",
+            user.photoURL = ""
+            return user
+        })
+        goto("/")
+    }
 </script>
 {#if userStats}
     <div class="account">
@@ -51,7 +73,7 @@
             </div>
             <div class="max">
                 <h1>{userStats.highestScore}</h1>
-                <p>max streak</p>
+                <p>high score</p>
             </div>
         </div>
         <h2>statistics</h2>
@@ -64,28 +86,38 @@
             
         </div>
         <h2>achievements</h2>
-        <div class="leaderboards">
-            {#each leaderboards as leaderboard} 
-                <div class="badge badge-lg badge-accent">{leaderboard}</div>
-            {/each}
-            {#if !addToLeaderboard} 
-                <span class="" on:click={(e) => addToLeaderboard = true}>+</span>
-            {/if}
-            {#if addToLeaderboard} 
-                <form on:submit|preventDefault={submitHandleSingUp}>
-                    <label>
-                        <input 
-                            class="input input-bordered input-sm w-full max-w-xs" 
-                            type="text"
-                            on:change={(e) => {value = e.target.value}}
-                            value={value} 
-                            required>
-                    </label>
-                    <button>add</button>
-                </form>
-            {/if}
+        <div class="leaderboards-container">
+            <div class="leaderboards">
+                {#each leaderboards as leaderboard} 
+                    <div class="badge badge-lg badge-accent">{leaderboard}</div>
+                    {#if addToLeaderboard}
+                        <span on:click={deleteLeaderboard(leaderboard)}>x</span>
+                    {/if}
+                {/each}
+            </div>
+            <div class="add-to-leaderboard">
+                {#if !addToLeaderboard} 
+                    <span class="" on:click={(e) => addToLeaderboard = true}>+</span>
+                {/if}
+                {#if addToLeaderboard} 
+                    <form on:submit|preventDefault={submitHandleSingUp}>
+                        <label>
+                            <input 
+                                class="input input-bordered input-sm w-full max-w-xs" 
+                                type="text"
+                                on:change={(e) => {value = e.target.value}}
+                                value={value} 
+                                required
+                            >
+                        </label>
+                        <button>add</button>
+                    </form>
+                {/if}
+            </div>
         </div>
         <h2>leaderboards</h2>
+        <button class="btn btn-wide btn-secondary" on:click={logout}>logout</button>
+
     </div>
     
 {:else}  
@@ -142,20 +174,34 @@
         justify-content: center;
         width: 150px;
     }
-    .leaderboards {
+    .leaderboards-container {
         display: flex;
         align-items: center;
+    }
+    .leaderboards-container > * {
+        margin: 5px;
+    }
+    .leaderboards-container span {
+        cursor: pointer;
+    }
+    .leaderboards-container form {
+        display: flex;
+    }
+    .leaderboards-container form > * {
+        margin: 5px;
+    }
+    .add-to-leaderboard {
+        display: flex;
+    }
+    .leaderboards {
+        display: flex;
+        flex-wrap: wrap;
+        max-width: 260px;
     }
     .leaderboards > * {
         margin: 5px;
     }
-    .leaderboards span {
-        cursor: pointer;
-    }
-    .leaderboards form {
-        display: flex;
-    }
-    .leaderboards form > * {
-        margin: 5px;
+    .leaderboards > span {
+        margin: 1;
     }
 </style>
