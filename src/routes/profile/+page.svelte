@@ -19,6 +19,7 @@
 		leaderboards = ['global', ...userStats.leaderBoards];
 		leaderboards = [...userStats.leaderBoards];
 	});
+
 	const submitHandleSingUp = async () => {
 		console.log('creating leaderboard', value);
 		const body = { leaderboardName: value };
