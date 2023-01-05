@@ -1,161 +1,286 @@
 <script lang="ts">
-    import userStore from "../../stores/userStore"
-    import { onMount } from "svelte";
-	import { fetchUser, postLeaderBoard, updateUser } from "../../api";
-    import {achievements} from "./badges/achievements"
-    import Badge from "../../components/Badge.svelte";
-	import FormInput from "../../components/FormInput.svelte";
-    console.log(achievements)
-    let user;
-    let userStats
-    let leaderboards;
-    let value = "" 
-    let addToLeaderboard = false
-    userStore.subscribe((data) => user = data)
-    onMount(async () => {
-        userStats = await fetchUser(user.userId)
-        leaderboards = ["global",...userStats.leaderBoards]
-    })
-    const submitHandleSingUp = async () => {
-        console.log("creating leaderboard", value)
-        const body = {leaderboardName: value}
-        const body2 = {leaderBoards: {
-                leaderBoard: value,
-                addTo: true
-            }}
-            const newLeaderboard = await postLeaderBoard(body)
-            const updatedUser = await updateUser(user.userId, body2)
-            addToLeaderboard = false
-            leaderboards = [...leaderboards, value]
-            value = ""
-    }
+	import userStore from '../../stores/userStore';
+	import { onMount } from 'svelte';
+	import { fetchUser, postLeaderBoard, updateUser } from '../../api';
+	import { achievements } from './badges/achievements';
+	import Badge from '../../components/Badge.svelte';
+	import FormInput from '../../components/FormInput.svelte';
+	console.log(achievements);
+	let user;
+	let userStats;
+	let leaderboards;
+	let value = '';
+	let addToLeaderboard = false;
+	userStore.subscribe((data) => (user = data));
+	onMount(async () => {
+		userStats = await fetchUser(user.userId);
+		leaderboards = ['global', ...userStats.leaderBoards];
+	});
+	const submitHandleSingUp = async () => {
+		console.log('creating leaderboard', value);
+		const body = { leaderboardName: value };
+		const body2 = {
+			leaderBoards: {
+				leaderBoard: value,
+				addTo: true
+			}
+		};
+		const newLeaderboard = await postLeaderBoard(body);
+		const updatedUser = await updateUser(user.userId, body2);
+		addToLeaderboard = false;
+		leaderboards = [...leaderboards, value];
+		value = '';
+	};
 </script>
+
 {#if userStats}
-    <div class="account">
-        <h3>profile</h3>
-        <div class="profile">
-            <img src={user.photoURL} alt="profile picture">
-            <div>
-                <p>{userStats.username} <span>🖊️</span></p>
-                <p>Last played {userStats.dateLastPlayed}</p>
-            </div>
-        </div>
-        <div class="stats">
-            <div class="today">
-                <h1>{userStats.todayStats.score}</h1>
-                <p>today score</p>
-            </div>
-            <div class="current">
-                <h1>{userStats.currentStreak}</h1>
-                <p>current streak</p>
-            </div>
-            <div class="max">
-                <h1>{userStats.highestScore}</h1>
-                <p>max streak</p>
-            </div>
-        </div>
-        <h2>statistics</h2>
-        <div class="achiements-container">
-            {#each achievements as badge }
-                <div class="achievement">
-                    <Badge {badge} locked={!userStats.achievements.includes(badge.type)}></Badge>
-                </div>
-            {/each}
-            
-        </div>
-        <h2>achievements</h2>
-        <div class="leaderboards">
-            {#each leaderboards as leaderboard} 
-                <div class="badge badge-lg badge-accent">{leaderboard}</div>
-            {/each}
-            {#if !addToLeaderboard} 
-                <span class="" on:click={(e) => addToLeaderboard = true}>+</span>
-            {/if}
-            {#if addToLeaderboard} 
-                <form on:submit|preventDefault={submitHandleSingUp}>
-                    <label>
-                        <input 
-                            class="input input-bordered input-sm w-full max-w-xs" 
-                            type="text"
-                            on:change={(e) => {value = e.target.value}}
-                            value={value} 
-                            required>
-                    </label>
-                    <button>add</button>
-                </form>
-            {/if}
-        </div>
-        <h2>leaderboards</h2>
-    </div>
-    
-{:else}  
-    <h2>loading</h2>
+	<div class="account">
+		<h3>profile</h3>
+		<div class="profile">
+			<img src={user.photoURL} alt="profile picture" />
+			<div>
+				<p>{userStats.username} <span>🖊️</span></p>
+				<p>Last played {userStats.dateLastPlayed}</p>
+			</div>
+		</div>
+		<div class="stats">
+			<div class="today">
+				<h1>{userStats.todayStats.score}</h1>
+				<p>today score</p>
+			</div>
+			<div class="current">
+				<h1>{userStats.currentStreak}</h1>
+				<p>current streak</p>
+			</div>
+			<div class="max">
+				<h1>{userStats.highestScore}</h1>
+				<p>max streak</p>
+			</div>
+		</div>
+		<h2>statistics</h2>
+		<div class="achiements-container">
+			{#each achievements as badge}
+				<div class="achievement">
+					<Badge {badge} locked={!userStats.achievements.includes(badge.type)} />
+				</div>
+			{/each}
+		</div>
+		<h2>achievements</h2>
+		<div class="leaderboards">
+			{#each leaderboards as leaderboard}
+				<div class="badge badge-lg badge-accent">{leaderboard}</div>
+			{/each}
+			{#if !addToLeaderboard}
+				<span class="" on:click={(e) => (addToLeaderboard = true)}>+</span>
+			{/if}
+			{#if addToLeaderboard}
+				<form on:submit|preventDefault={submitHandleSingUp}>
+					<label>
+						<input
+							class="input input-bordered input-sm w-full max-w-xs"
+							type="text"
+							on:change={(e) => {
+								value = e.target.value;
+							}}
+							{value}
+							required
+						/>
+					</label>
+					<button>add</button>
+				</form>
+			{/if}
+		</div>
+		<h2>leaderboards</h2>
+	</div>
+{:else}
+	<div class="loader">
+		<div class="loader-inner">
+			<div class="loader-line-wrap">
+				<div class="loader-line" />
+			</div>
+			<div class="loader-line-wrap">
+				<div class="loader-line" />
+			</div>
+			<div class="loader-line-wrap">
+				<div class="loader-line" />
+			</div>
+			<div class="loader-line-wrap">
+				<div class="loader-line" />
+			</div>
+			<div class="loader-line-wrap">
+				<div class="loader-line" />
+			</div>
+		</div>
+	</div>
 {/if}
+
 <style>
-    .account {
-        display: flex;
-        flex-direction: column;
-        background-color: #2F3A51;
-        border-radius: 10px;
-        padding: 40px;
-        margin-top: 400px;
-    }
-    .profile {
-        display: flex;
-        align-items: center;
-        
-    }
-    .profile span {
-        cursor: pointer;
-    }
-    .stats {
-        display: flex;
-        justify-content: center;
-    }
-    .stats div {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin: 20px;
-        border: none;
-    }
-    .stats div > h1 {
-        font-size:3em
-    }
-    .account h2 {
-        font-size: 1.3em;
-        align-self: center;
-        margin-top: 5px;
-    }
-    .achiements-container {
-        margin: 20px;
-        width: 25vw;
-        height: fit-content;
-        display: flex;
-        flex-wrap: wrap;
-        height: fit-content;
-    }
-    .achievement {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        width: 150px;
-    }
-    .leaderboards {
-        display: flex;
-        align-items: center;
-    }
-    .leaderboards > * {
-        margin: 5px;
-    }
-    .leaderboards span {
-        cursor: pointer;
-    }
-    .leaderboards form {
-        display: flex;
-    }
-    .leaderboards form > * {
-        margin: 5px;
-    }
+	.account {
+		display: flex;
+		flex-direction: column;
+		background-color: #2f3a51;
+		border-radius: 10px;
+		padding: 40px;
+		margin-top: 400px;
+	}
+	.profile {
+		display: flex;
+		align-items: center;
+	}
+	.profile span {
+		cursor: pointer;
+	}
+	.stats {
+		display: flex;
+		justify-content: center;
+	}
+	.stats div {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		margin: 20px;
+		border: none;
+	}
+	.stats div > h1 {
+		font-size: 3em;
+	}
+	.account h2 {
+		font-size: 1.3em;
+		align-self: center;
+		margin-top: 5px;
+	}
+	.achiements-container {
+		margin: 20px;
+		width: 25vw;
+		height: fit-content;
+		display: flex;
+		flex-wrap: wrap;
+		height: fit-content;
+	}
+	.achievement {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		width: 150px;
+	}
+	.leaderboards {
+		display: flex;
+		align-items: center;
+	}
+	.leaderboards > * {
+		margin: 5px;
+	}
+	.leaderboards span {
+		cursor: pointer;
+	}
+	.leaderboards form {
+		display: flex;
+	}
+	.leaderboards form > * {
+		margin: 5px;
+	}
+
+	/* .loader {
+		background: #000;
+		background: radial-gradient(#222, #000);
+		bottom: 0;
+		left: 0;
+		overflow: hidden;
+		position: fixed;
+		right: 0;
+		top: 0;
+		z-index: 99999;
+	} */
+
+	.loader-inner {
+		bottom: 0;
+		height: 60px;
+		left: 0;
+		margin: auto;
+		position: absolute;
+		right: 0;
+		top: 0;
+		width: 100px;
+	}
+
+	.loader-line-wrap {
+		animation: spin 2000ms cubic-bezier(0.175, 0.885, 0.32, 1.275) infinite;
+		box-sizing: border-box;
+		height: 50px;
+		left: 0;
+		overflow: hidden;
+		position: absolute;
+		top: 0;
+		transform-origin: 50% 100%;
+		width: 100px;
+	}
+	.loader-line {
+		border: 4px solid transparent;
+		border-radius: 100%;
+		box-sizing: border-box;
+		height: 100px;
+		left: 0;
+		margin: 0 auto;
+		position: absolute;
+		right: 0;
+		top: 0;
+		width: 100px;
+	}
+	.loader-line-wrap:nth-child(1) {
+		animation-delay: -50ms;
+	}
+	.loader-line-wrap:nth-child(2) {
+		animation-delay: -100ms;
+	}
+	.loader-line-wrap:nth-child(3) {
+		animation-delay: -150ms;
+	}
+	.loader-line-wrap:nth-child(4) {
+		animation-delay: -200ms;
+	}
+	.loader-line-wrap:nth-child(5) {
+		animation-delay: -250ms;
+	}
+
+	.loader-line-wrap:nth-child(1) .loader-line {
+		border-color: hsl(0, 80%, 60%);
+		height: 90px;
+		width: 90px;
+		top: 7px;
+	}
+	.loader-line-wrap:nth-child(2) .loader-line {
+		border-color: hsl(60, 80%, 60%);
+		height: 76px;
+		width: 76px;
+		top: 14px;
+	}
+	.loader-line-wrap:nth-child(3) .loader-line {
+		border-color: hsl(120, 80%, 60%);
+		height: 62px;
+		width: 62px;
+		top: 21px;
+	}
+	.loader-line-wrap:nth-child(4) .loader-line {
+		border-color: hsl(180, 80%, 60%);
+		height: 48px;
+		width: 48px;
+		top: 28px;
+	}
+	.loader-line-wrap:nth-child(5) .loader-line {
+		border-color: hsl(240, 80%, 60%);
+		height: 34px;
+		width: 34px;
+		top: 35px;
+	}
+
+	@keyframes spin {
+		0%,
+		15% {
+			transform: rotate(0);
+		}
+		100% {
+			transform: rotate(360deg);
+		}
+	}
 </style>
