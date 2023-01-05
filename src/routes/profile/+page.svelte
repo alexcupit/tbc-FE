@@ -53,6 +53,7 @@
 			(user.isLoggedIn = false), (user.username = ''), (user.userId = ''), (user.photoURL = '');
 			return user;
 		});
+		localStorage.removeItem('user');
 		goto('/');
 	};
 
@@ -166,6 +167,8 @@
 		<br />
 		<button class="btn btn-wide btn-secondary" on:click={logout}>logout</button>
 	</div>
+{:else if !user.isLoggedIn}
+	<a class="btn" href="/login">log in</a>
 {:else}
 	<div class="loader">
 		<div class="loader-inner">
