@@ -1,16 +1,16 @@
 <script>
 	import Leaderboard from '../../components/Leaderboard.svelte';
-	import userStore from '../../stores/userStore';
+	// import userStore from '../../stores/userStore';
 
-	let user = {};
-	userStore.subscribe((value) => {
-		user = value;
-	});
+	// let user = {};
+	// userStore.subscribe((value) => {
+	// 	user = value;
+	// });
 </script>
 
 <Leaderboard leaderboardName={'global'} />
 
-{#if !user.isLoggedIn}
+<!-- {#if !user.isLoggedIn}
 	<br />
 	<div class="alert shadow-lg">
 		<div>
@@ -31,4 +31,4 @@
 			>
 		</div>
 	</div>
-{/if}
+{/if} -->
