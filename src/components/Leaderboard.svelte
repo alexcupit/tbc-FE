@@ -27,11 +27,12 @@
 	};
 </script>
 
-
 {#if !isLoading}
 	<article class="prose">
-		<h2 class="mb-1">Today's Leaderboard</h2>
-		<h3 class="text-center mb-1">{today}</h3>
+		<h2 class="mb-1">
+			Today's {leaderboardName === 'global' ? 'Global' : leaderboardName} Leaderboard
+		</h2>
+		<h3 class="text-center mb-1">{day} - {month} - {year}</h3>
 	</article>
 	<div class="overflow-x-auto">
 		<table class=" table table-compact w-full text-center">
@@ -77,9 +78,7 @@
 						d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
 					/></svg
 				>
-				<span
-					>Log in to join the global leaderboard and create your own leaderboards with friends!</span
-				>
+				<span>Log in to join this leaderboard and create your own leaderboards with friends!</span>
 			</div>
 		</div>
 	{/if}
@@ -106,6 +105,9 @@
 {/if}
 
 <style>
+	.alert {
+		width: max-content;
+	}
 
 	.loader-inner {
 		bottom: 0;
@@ -225,6 +227,4 @@
 		grid-template-columns: 25% 25% 25% 25%;
 		text-align: right;
 	} */
-
-
 </style>
