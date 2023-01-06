@@ -2,7 +2,7 @@
 	import userStore from '../../stores/userStore';
 	import { onMount } from 'svelte';
 	import { fetchUser, postLeaderBoard, updateUser, patchLeaderBoard } from '../../api';
-	import { achievements } from './badges/achievements';
+	import { achievements } from './achievements';
 	import Badge from '../../components/Badge.svelte';
 	import FormInput from '../../components/FormInput.svelte';
 	import { goto } from '$app/navigation';
