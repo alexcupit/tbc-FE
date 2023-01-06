@@ -1,5 +1,5 @@
 <div class="logo-and-play">
-	<img src="src/icons/KnowItAll.png" alt="" height="350" width="350" class="mb-5" />
+	<img src="KnowItAll.png" alt="" height="350" width="350" class="mb-5" />
 	<a href="/play" class="btn test"><span class="text-neutral">PLAY</span></a>
 </div>
 
