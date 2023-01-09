@@ -28,6 +28,7 @@
 				each day.
 			</p>
 			<p>You can also set up your own leaderboard with friends and see how you compare each day!</p>
+			<p class="text-xs">Thanks to The Trivia API for sourcing these questions.</p>
 		</section>
 		<div class="modal-action">
 			<a href="/#" class="btn">Got it!</a>
