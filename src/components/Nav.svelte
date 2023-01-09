@@ -9,7 +9,7 @@
 	});
 </script>
 
-<div class="modal" id="my-modal-2">
+<div class="modal" id="how-to-play">
 	<div class="modal-box">
 		<h3 class="font-bold text-lg">Welcome to Know It All</h3>
 		<section class="prose">
@@ -113,7 +113,7 @@
 					>
 				</li>
 				<li>
-					<a href="#my-modal-2"
+					<a href="#how-to-play"
 						><svg
 							xmlns="http://www.w3.org/2000/svg"
 							xmlns:xlink="http://www.w3.org/1999/xlink"
