@@ -1,6 +1,8 @@
 <script lang="ts">
 	let innerWidth: number;
 	import userStore from '../stores/userStore';
+	import { page } from '$app/stores';
+
 	let user: object;
 	userStore.subscribe((data) => {
 		user = data;
@@ -31,7 +33,7 @@
 			<p class="text-xs">Thanks to The Trivia API for sourcing these questions.</p>
 		</section>
 		<div class="modal-action">
-			<a href="/#" class="btn">Got it!</a>
+			<a href={`${$page.url.pathname}#`} class="btn">Got it!</a>
 		</div>
 	</div>
 </div>
