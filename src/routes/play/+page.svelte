@@ -59,10 +59,19 @@
 			new Date().setUTCHours(0, 0, 0, 0) -
 			new Date(localStorage.dateLastPlayed).setUTCHours(0, 0, 0, 0);
 
-		if (timeSinceLastPlay > 86400000) {
-			$currentStreak = 0;
+		if (timeSinceLastPlay > 0) {
+			// not the same day
 			$completedCheck = false;
-			localStorage.setItem('todayStats', JSON.stringify(todayStats));
+			$questionNumber = 0;
+			localStorage.setItem(
+				'todayStats',
+				JSON.stringify({ date: '', score: 0, timeTaken: '', correctAns: 0, quizCompleted: false })
+			);
+		}
+
+		if (timeSinceLastPlay > 86400000) {
+			// more than one day
+			$currentStreak = 0;
 		}
 	}
 

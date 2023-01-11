@@ -1,13 +1,15 @@
 <script lang="ts">
 	let innerWidth: number;
 	import userStore from '../stores/userStore';
+	import { page } from '$app/stores';
+
 	let user: object;
 	userStore.subscribe((data) => {
 		user = data;
 	});
 </script>
 
-<div class="modal" id="my-modal-2">
+<div class="modal" id="how-to-play">
 	<div class="modal-box">
 		<h3 class="font-bold text-lg">Welcome to Know It All</h3>
 		<section class="prose">
@@ -28,9 +30,10 @@
 				each day.
 			</p>
 			<p>You can also set up your own leaderboard with friends and see how you compare each day!</p>
+			<p class="text-xs">Thanks to The Trivia API for sourcing these questions.</p>
 		</section>
 		<div class="modal-action">
-			<a href="/#" class="btn">Got it!</a>
+			<a href={`${$page.url.pathname}#`} class="btn">Got it!</a>
 		</div>
 	</div>
 </div>
@@ -110,7 +113,7 @@
 					>
 				</li>
 				<li>
-					<a href="#my-modal-2"
+					<a href="#how-to-play"
 						><svg
 							xmlns="http://www.w3.org/2000/svg"
 							xmlns:xlink="http://www.w3.org/1999/xlink"
