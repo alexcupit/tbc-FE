@@ -248,14 +248,12 @@
 		border-radius: 10px;
 		padding: 40px;
 		align-items: center;
+		width: 45vw;
 	}
 	.profile {
 		display: flex;
 		align-items: center;
 		flex-direction: column;
-	}
-	.profile span {
-		cursor: pointer;
 	}
 	.stats {
 		display: flex;
@@ -278,7 +276,7 @@
 	}
 	.achiements-container {
 		margin: 20px;
-		width: 25vw;
+		width: 30vw;
 		height: fit-content;
 		display: flex;
 		flex-wrap: wrap;
@@ -402,7 +400,23 @@
 		width: 34px;
 		top: 35px;
 	}
-
+	@media only screen and (min-width: 600px) and (max-width: 1000px) {
+		.achiements-container {
+			width: 75%;
+		}
+		.account {
+			width: 80%;
+		}
+	}
+	@media only screen and (max-width: 600px) {
+		.achiements-container {
+			width: 100%;
+		}
+		.account {
+			width: 100%;
+		}
+	}
+	
 	@keyframes spin {
 		0%,
 		15% {

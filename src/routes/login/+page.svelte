@@ -112,6 +112,14 @@
 				disableButton = false;
 			});
 	};
+	const toggleSignUp = () => {
+		signUp = !signUp
+		values = {
+			username: '',
+			email: '',
+			password: ''
+		}
+	}
 </script>
 
 {#if signUp}
@@ -147,11 +155,11 @@
 {/if}
 {#if signUp}
 	<article class="prose">
-		<a class="link link-accent" on:click={() => (signUp = false)}>I have an account</a>
+		<a class="link link-accent" on:click={toggleSignUp}>I have an account</a>
 	</article>
 {:else}
 	<article class="prose">
-		<a class="link link-accent" on:click={() => (signUp = true)}>Sign up</a>
+		<a class="link link-accent" on:click={toggleSignUp}>Sign up</a>
 	</article>
 {/if}
 
